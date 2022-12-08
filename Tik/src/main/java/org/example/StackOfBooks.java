@@ -16,7 +16,7 @@ public class StackOfBooks {
 
             for (int j = 0; j < alphabet.size(); j++) {
                 if (sbBwt.charAt(i) == alphabet.get(j)) {
-                    sequence.append(j);
+                    sequence.append(Integer.toBinaryString(j));
                     sequence.append(" ");
 
                     if (j > 0) {

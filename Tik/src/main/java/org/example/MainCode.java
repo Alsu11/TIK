@@ -18,29 +18,34 @@ public class MainCode {
 
         List<StringBuilder> resultBwt = bwt(word);
 
-        writeToFile(stackOfBooks(resultBwt.get(0)), resultBwt.get(1));
-
         List<Character> alph = getAlphabet(resultBwt.get(0));
         for (int i = 0; i < alph.size(); i++) {
-            System.out.print(alph.get(i) + " ");
+            System.out.print(alph.get(i));
         }
         System.out.println();
 
-
         System.out.println(stackOfBooks(resultBwt.get(0)));
-        System.out.println(resultBwt.get(1));
+        System.out.println(Integer.toBinaryString(Integer.parseInt(resultBwt.get(1).toString())));
 
+        writeToFile(alph, stackOfBooks(resultBwt.get(0)), resultBwt.get(1));
     }
 
-    private static void writeToFile(StringBuilder stackOfBooks, StringBuilder bwtNumber) {
-        File file = new File("C:\\ProjectsJava\\Tik\\Tik\\src\\main\\resources\\result.txt");
+    private static void writeToFile(List<Character> alph, StringBuilder stackOfBooks, StringBuilder bwtNumber) {
+        File file = new File("C:\\TIK\\Tik\\src\\main\\resources\\code.txt");
         FileWriter fr = null;
         try {
             fr = new FileWriter(file);
 
+            for (Character character : alph) {
+                fr.write(character);
+            }
+
+            fr.write("\n");
+
             fr.write(stackOfBooks.toString());
             fr.write("\n");
-            fr.write(bwtNumber.toString());
+            
+            fr.write(Integer.toBinaryString(Integer.parseInt(bwtNumber.toString())));
 
         } catch (IOException e) {
             e.printStackTrace();

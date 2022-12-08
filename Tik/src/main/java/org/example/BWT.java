@@ -6,7 +6,6 @@ import java.util.List;
 public class BWT {
     static List<StringBuilder> bwt(String word) {
         int len = word.length();
-
         String[] strings = new String[len];
         strings[0] = word;
         permutation(len, strings);

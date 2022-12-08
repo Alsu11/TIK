@@ -2,8 +2,6 @@ package org.example;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Huffman {
 
@@ -12,19 +10,20 @@ public class Huffman {
         TreeMap<Character, Integer> alphabetData = getDataAlphabet(file);
         String code = getCode(file);
 
-        // генерируем список листов дерева
-        ArrayList<Node> nodes = new ArrayList<>();
+        ArrayList<Node> nodes = new ArrayList<>();   // генерируем список листов дерева
         for (Character c: alphabetData.keySet()) {
             nodes.add(new Node(c, alphabetData.get(c)));
         }
 
-        // строим кодовое дерево с помощью алгоритма Хаффмана
-        Node tree = getTree(nodes);
+        Node tree = getTree(nodes);    // строим кодовое дерево с помощью алгоритма Хаффмана
 
-        // генерируем таблицу префиксных кодов для кодируемых символов с помощью кодового дерева
-        TreeMap<Character, String> codes = new TreeMap<>();
+        TreeMap<Character, String> codes = new TreeMap<>();   // генерируем таблицу префиксных кодов для кодируемых символов с помощью кодового дерева
         for (Character c: alphabetData.keySet()) {
             codes.put(c, tree.getCodeForCharacter(c, ""));
+        }
+
+        for (Map.Entry<Character, String> m : codes.entrySet()) {
+           System.out.println(m.getKey() + " : " + m.getValue());
         }
 
         assert code != null;
@@ -33,11 +32,11 @@ public class Huffman {
 
     private static Node getTree(ArrayList<Node> codeTreeNodes) {
         while (codeTreeNodes.size() > 1) {
-            Collections.sort(codeTreeNodes);
-            Node left = codeTreeNodes.remove(codeTreeNodes.size() - 1);
-            Node right = codeTreeNodes.remove(codeTreeNodes.size() - 1);
+            codeTreeNodes.sort(Collections.reverseOrder());
+            Node left = codeTreeNodes.remove(0);
+            Node right = codeTreeNodes.remove(0);
 
-            Node parent = new Node(null, right.weight + left.weight, left, right);
+            Node parent = new Node(null, right.probability + left.probability, left, right);
             codeTreeNodes.add(parent);
         }
         return  codeTreeNodes.get(0);
@@ -48,9 +47,13 @@ public class Huffman {
 
         Node node = tree;
         for (int i = 0; i < encoded.length(); i++) {
-            node = encoded.charAt(i) == '0' ? node.left : node.right;
-            if (node.content != null) {
-                decoded.append(node.content);
+            if (encoded.charAt(i) == '0') {
+                node = node.left;
+            } else {
+                node = node.right;
+            }
+            if (node.character != null) {
+                decoded.append(node.character);
                 node = tree;
             }
         }
@@ -67,7 +70,7 @@ public class Huffman {
             List<String> probabilities = Arrays.asList(reader.readLine().split(" "));
 
             for (int i = 0; i < alphabet.size(); i++) {
-                int pr = -10;
+                int pr;
                 if (probabilities.get(i).contains(",") || probabilities.get(i).contains(".")) {
                     pr = (int) (Float.parseFloat(probabilities.get(i).replace(",", ".")) * 1000000);
                 } else {
